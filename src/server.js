@@ -42,9 +42,16 @@ app.get('/api/sprockets/:id', async (req, res) => {
 app.post('/api/sprockets', jsonParser, async (req, res) => {
     await mongoose.connect(MONGO_CONNECTION_STRING);
 
-    console.log(req.body);
     const sprocket = new Sprocket(req.body);
     await sprocket.save();
+
+    res.sendStatus(200);
+});
+
+app.put('/api/sprockets/:id', jsonParser, async (req, res) => {
+    await mongoose.connect(MONGO_CONNECTION_STRING);
+
+    await Sprocket.findOneAndUpdate({_id: req.params.id}, req.body);
 
     res.sendStatus(200);
 });
