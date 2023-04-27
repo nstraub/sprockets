@@ -18,6 +18,14 @@ app.get('/api/sprocket-factories', async (req, res) => {
     res.send(JSON.stringify(sprocketFactories));
 });
 
+app.get('/api/sprocket-factories/:id', async (req, res) => {
+    await mongoose.connect(MONGO_CONNECTION_STRING);
+
+    const factory = await sprocketFactory.findById(req.params.id);
+
+    res.send(JSON.stringify(factory));
+});
+
 app.listen(PORT, HOST, () => {
     console.log(`Running on http://${HOST}:${PORT}`);
 });

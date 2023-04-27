@@ -10,4 +10,4 @@ const sprocketFactorySchema = {
 
 module.exports = {
     sprocketFactorySchema
-}
+};
