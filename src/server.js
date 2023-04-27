@@ -3,6 +3,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const {sprocketFactorySchema, sprocketSchema} = require("./schemas");
+const bodyParser = require('body-parser');
 
 const PORT = 3000;
 const HOST = '0.0.0.0';
@@ -12,6 +13,8 @@ const SprocketFactory = mongoose.model('SprocketFactory', new mongoose.Schema(sp
 const Sprocket = mongoose.model('Sprocket', new mongoose.Schema(sprocketSchema));
 
 const app = express();
+
+const jsonParser = bodyParser.json();
 
 app.get('/api/sprocket-factories', async (req, res) => {
     await mongoose.connect(MONGO_CONNECTION_STRING);
@@ -34,6 +37,16 @@ app.get('/api/sprockets/:id', async (req, res) => {
     const sprocket = await Sprocket.findById(req.params.id)
 
     res.send(JSON.stringify(sprocket));
+});
+
+app.post('/api/sprockets', jsonParser, async (req, res) => {
+    await mongoose.connect(MONGO_CONNECTION_STRING);
+
+    console.log(req.body);
+    const sprocket = new Sprocket(req.body);
+    await sprocket.save();
+
+    res.sendStatus(200);
 });
 
 app.listen(PORT, HOST, () => {
