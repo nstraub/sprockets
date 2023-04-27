@@ -1,0 +1,39 @@
+services:
+  app:
+    image: node:18-alpine
+    depends_on:
+      - mongo
+    ports:
+        - 3000:3000
+    working_dir: /home/node/src
+    volumes:
+        - ./src:/home/node/src
+    command: sh -c "npm i && npm start"
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: asdfasdf
+      
+  mongo-seed:
+    image: mongo
+    depends_on:
+      - mongo
+    command: sh -c "/home/mongo/seed-data/seed.sh"
+    working_dir: /home/mongo/seed-data
+    volumes:
+      - ./seed-data:/home/mongo/seed-data
+
+  mongo-express:
+    image: mongo-express
+    depends_on: 
+      - mongo
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: asdfasdf
+      ME_CONFIG_MONGODB_URL: mongodb://root:asdfasdf@mongo:27017/
