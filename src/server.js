@@ -16,15 +16,19 @@ const app = express();
 
 const jsonParser = bodyParser.json();
 
-app.get('/api/sprocket-factories', async (req, res) => {
+async function connectToMongo() {
     await mongoose.connect(MONGO_CONNECTION_STRING);
+}
+
+app.get('/api/sprocket-factories', async (req, res) => {
+    await connectToMongo();
 
     const sprocketFactories = await SprocketFactory.find();
     res.send(JSON.stringify(sprocketFactories));
 });
 
 app.get('/api/sprocket-factories/:id', async (req, res) => {
-    await mongoose.connect(MONGO_CONNECTION_STRING);
+    await connectToMongo();
 
     const factory = await SprocketFactory.findById(req.params.id);
 
@@ -32,15 +36,15 @@ app.get('/api/sprocket-factories/:id', async (req, res) => {
 });
 
 app.get('/api/sprockets/:id', async (req, res) => {
-    await mongoose.connect(MONGO_CONNECTION_STRING);
+    await connectToMongo();
 
-    const sprocket = await Sprocket.findById(req.params.id)
+    const sprocket = await Sprocket.findById(req.params.id);
 
     res.send(JSON.stringify(sprocket));
 });
 
 app.post('/api/sprockets', jsonParser, async (req, res) => {
-    await mongoose.connect(MONGO_CONNECTION_STRING);
+    await connectToMongo();
 
     const sprocket = new Sprocket(req.body);
     await sprocket.save();
@@ -49,7 +53,7 @@ app.post('/api/sprockets', jsonParser, async (req, res) => {
 });
 
 app.put('/api/sprockets/:id', jsonParser, async (req, res) => {
-    await mongoose.connect(MONGO_CONNECTION_STRING);
+    await connectToMongo();
 
     await Sprocket.findOneAndUpdate({_id: req.params.id}, req.body);
 

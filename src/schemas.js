@@ -13,7 +13,7 @@ const sprocketFactorySchema = {
 const sprocketSchema = {
     sprocket_factory_id: ObjectId,
     sprocket_type_id: ObjectId
-}
+};
 
 module.exports = {
     sprocketFactorySchema,
