@@ -2,28 +2,38 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-const {sprocketFactorySchema} = require("./schemas");
+const {sprocketFactorySchema, sprocketSchema} = require("./schemas");
 
 const PORT = 3000;
 const HOST = '0.0.0.0';
 const MONGO_CONNECTION_STRING = 'mongodb://root:asdfasdf@mongo:27017/backend-challenge?authSource=admin';
 
-const sprocketFactory = mongoose.model('SprocketFactory', new mongoose.Schema(sprocketFactorySchema), 'sprocket-factories');
+const SprocketFactory = mongoose.model('SprocketFactory', new mongoose.Schema(sprocketFactorySchema), 'sprocket-factories');
+const Sprocket = mongoose.model('Sprocket', new mongoose.Schema(sprocketSchema));
 
 const app = express();
+
 app.get('/api/sprocket-factories', async (req, res) => {
     await mongoose.connect(MONGO_CONNECTION_STRING);
 
-    const sprocketFactories = await sprocketFactory.find();
+    const sprocketFactories = await SprocketFactory.find();
     res.send(JSON.stringify(sprocketFactories));
 });
 
 app.get('/api/sprocket-factories/:id', async (req, res) => {
     await mongoose.connect(MONGO_CONNECTION_STRING);
 
-    const factory = await sprocketFactory.findById(req.params.id);
+    const factory = await SprocketFactory.findById(req.params.id);
 
     res.send(JSON.stringify(factory));
+});
+
+app.get('/api/sprockets/:id', async (req, res) => {
+    await mongoose.connect(MONGO_CONNECTION_STRING);
+
+    const sprocket = await Sprocket.findById(req.params.id)
+
+    res.send(JSON.stringify(sprocket));
 });
 
 app.listen(PORT, HOST, () => {
